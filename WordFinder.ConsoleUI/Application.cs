@@ -9,7 +9,7 @@ namespace WordFinder.ConsoleUI
     class Application
     {
         private bool continueRunning;
-        List<string> germanWords;
+        //List<string> germanWords;
         SortedSet<string> resultWords;
 
         internal Application()
@@ -27,7 +27,8 @@ namespace WordFinder.ConsoleUI
                 //FindAndPrintPossibleWords_Basic(baseWord, out int possibleWordsCount);
                 //UI.PrintGeneratedWordsCount(possibleWordsCount);
 
-                resultWords = Wordfinder.findPossibleWords(germanWords, baseWord);
+                //resultWords = Wordfinder.findPossibleWords(germanWords, baseWord);
+                resultWords = Wordfinder.findPossibleWords(baseWord);
 
                 foreach (var item in resultWords)
                 {
@@ -51,7 +52,7 @@ namespace WordFinder.ConsoleUI
             continueRunning = true;
             Console.SetBufferSize(160, short.MaxValue - 1);
             Console.SetWindowSize(160, 65);
-            germanWords = WordList.LoadWordsByLanguage(Languages.German);
+            //germanWords = WordList.LoadWordsByLanguage(Languages.German);
         }
     }
 }
