@@ -6,7 +6,6 @@
         {
             Application App = new Application();
             App.Run();
-            App.Close();
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using WordFinder.Core.Helper;
 
@@ -50,13 +49,14 @@ namespace WordFinder.Core
             }
         }
 
-        public static SortedSet<string> findPossibleWords(string baseWord)
+        public static void FindPossibleWords(string baseWord, out SortedSet<string> resultList)
         {
+            resultList = new SortedSet<string>();
             Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
-            SortedSet<string> result = new SortedSet<string>();
 
-            using (var reader = new StreamReader(@"Data\German-Words_Dictionary_Final_Uppercase.txt"))
+            try
             {
+                using var reader = new StreamReader(@"Data\German-Words_Dictionary_Final_Uppercase.txt");
                 for (string currentWord = reader.ReadLine(); currentWord != null; currentWord = reader.ReadLine())
                 {
                     Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord);
@@ -84,54 +84,15 @@ namespace WordFinder.Core
                     }
                     if (canMakeCurrentWord)
                     {
-                        result.Add(currentWord);
+                        resultList.Add(currentWord);
                     }
 
                 }
             }
-
-            return result;
-        }
-
-        public static async Task findPossibleWordsAsync(List<string> wordsDict, string baseWord, List<string> result)
-        {
-
-            Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
-
-
-            foreach (string currentWord in wordsDict)
+            catch (Exception e)
             {
-                Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord.ToUpper());
-
-                bool canMakeCurrentWord = true;
-
-                foreach (char character in currentWordDict.Keys)
-                {
-                    int currentWordCharCount = currentWordDict[character];
-                    int lettersCharCount = 0;
-
-                    if (lettersCountDict.ContainsKey(character))
-                    {
-                        lettersCharCount = lettersCountDict[character];
-                    }
-                    else
-                    {
-                        lettersCharCount = 0;
-                    }
-                    if (currentWordCharCount > lettersCharCount)
-                    {
-                        canMakeCurrentWord = false;
-                        break;
-                    }
-                }
-                if (canMakeCurrentWord)
-                {
-
-                    await Task.Run(() => result.Add(currentWord));
-                }
-
+                throw;
             }
         }
-
     }
 }

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 
 namespace WordFinder.Core.Helper
 {
-    class CharacterCounter
+    public class CharacterCounter
     {
         //public string Word;
         //public char Character;
@@ -25,9 +23,6 @@ namespace WordFinder.Core.Helper
         {
             baseWord = SortString(baseWord);
 
-            //var result = baseWord.Where(char.IsLetterOrDigit)
-            //              .GroupBy(char.ToLower)
-            //              .Select(counter => new { Letter = counter.Key, Counter = counter.Count() });
             Dictionary<char,int> result = new Dictionary<char, int>();
             foreach (var character in baseWord)
             {

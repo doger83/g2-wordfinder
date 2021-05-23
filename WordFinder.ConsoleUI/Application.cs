@@ -8,9 +8,8 @@ namespace WordFinder.ConsoleUI
 {
     class Application
     {
-        private bool continueRunning;
-        //List<string> germanWords;
-        SortedSet<string> resultWords;
+        private bool running;
+        //SortedSet<string> resultWords;
 
         internal Application()
         {
@@ -19,40 +18,32 @@ namespace WordFinder.ConsoleUI
 
         internal void Run()
         {
-
-            while (continueRunning)
+            while (running)
             {
-                UI.AskForNewWord(out string baseWord);
+                UIManager.AskForNewWord(out string baseWord);
 
-                //FindAndPrintPossibleWords_Basic(baseWord, out int possibleWordsCount);
-                //UI.PrintGeneratedWordsCount(possibleWordsCount);
-
-                //resultWords = Wordfinder.findPossibleWords(germanWords, baseWord);
-                resultWords = Wordfinder.findPossibleWords(baseWord);
-
-                foreach (var item in resultWords)
+                try
                 {
-                    Console.Write("{0,-40}", item);
+                    Wordfinder.FindPossibleWords(baseWord, out SortedSet<string> resultWords);
+                    UIManager.PrintWordList(resultWords);
+                    UIManager.PrintGeneratedWordsCount(resultWords.Count, baseWord);
+                    UIManager.TryAgainMassage(ref running);
                 }
-
-                UI.PrintGeneratedWordsCount(resultWords.Count);
-
-                continueRunning = false;
+                catch (Exception e)
+                {
+                    UIManager.ShowErrorMassage(e.Message);
+                    running = false;
+                }
             }
-        }
-
-
-        internal void Close()
-        {
-            UI.ProgrammEndsMassage();
+            UIManager.ProgrammEndsMassage();
         }
 
         private void Initialize()
         {
-            continueRunning = true;
+            running = true;
             Console.SetBufferSize(160, short.MaxValue - 1);
             Console.SetWindowSize(160, 65);
-            //germanWords = WordList.LoadWordsByLanguage(Languages.German);
+            //resultWords = new SortedSet<string>();
         }
     }
 }
