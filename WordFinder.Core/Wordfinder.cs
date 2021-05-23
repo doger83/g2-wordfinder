@@ -49,7 +49,7 @@ namespace WordFinder.Core
             }
         }
 
-        public static void FindPossibleWords(string baseWord, out SortedSet<string> resultList)
+        public static void FindPossibleWords_static(string baseWord, out SortedSet<string> resultList)
         {
             resultList = new SortedSet<string>();
             Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
@@ -86,10 +86,9 @@ namespace WordFinder.Core
                     {
                         resultList.Add(currentWord);
                     }
-
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }

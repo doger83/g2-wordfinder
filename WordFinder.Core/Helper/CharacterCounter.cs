@@ -6,39 +6,6 @@ namespace WordFinder.Core.Helper
 {
     public class CharacterCounter
     {
-        //public string Word;
-        //public char Character;
-        //public int Count;
-        private readonly Dictionary<char, int> letters = new Dictionary<char, int>();
-
-        public CharacterCounter(string Word)
-        {
-            //this.Word = Word;
-            //this.Character = Character;
-            //this.Count = Count;
-            letters = CountCharacters(Word);
-        }
-
-        public Dictionary<char, int> CountCharacters(string baseWord)
-        {
-            baseWord = SortString(baseWord);
-
-            Dictionary<char,int> result = new Dictionary<char, int>();
-            foreach (var character in baseWord)
-            {
-                char c1 = char.ToUpper(character);
-                try
-                {
-                    result.Add(c1, 1);
-                }
-                catch (Exception e)
-                {
-                    result[c1] = result[c1] + 1;
-                    //Debug.WriteLine("CountCharacters went wrong with Message:" + e.Message);
-                }
-            }
-            return result;
-        }
         internal static Dictionary<char, int> getCharacterCountDict(string letters)
         {
             var result = new Dictionary<char, int>();
@@ -59,7 +26,7 @@ namespace WordFinder.Core.Helper
             return result;
         }
 
-        private string SortString(string input)
+        private static string SortString(string input)
         {
             char[] characters = input.ToLower().ToArray();
             Array.Sort(characters);

@@ -60,7 +60,6 @@ namespace WordFinder.ConsoleUI.Massages
             Console.Write("Error: ");
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(errorMassage + "\n");
-
         }
 
         internal static void ProgrammEndsMassage()

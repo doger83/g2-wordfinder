@@ -6,19 +6,6 @@ namespace WordFinder.Data
 {
     public class WordList
     {
-        //        public List<string> Words;
-
-        //        public WordList(Languages language)
-        //        {
-        //            Words = LoadWordsByLanguage(language)
-        //;
-        //        }
-
-        //public void SaveWords(List<string> data, string fileName, Languages language)
-        //{
-        //    File.WriteAllLines(@$"Data\{language.ToString()}Words_Sorted.txt", data);
-        //}
-
         public static List<string> LoadWordsByLanguage(Languages language)
         {
             List <string> result  = new List<string>();
@@ -40,6 +27,10 @@ namespace WordFinder.Data
             }
 
             return result;
+        }
+        public void SaveWordsByLanguage(List<string> data, string baseWord, Languages language)
+        {
+            File.WriteAllLines(@$"Data\{language.ToString()}_Words_From_{baseWord}.txt", data);
         }
     }
 }

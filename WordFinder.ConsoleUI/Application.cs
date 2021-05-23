@@ -24,7 +24,7 @@ namespace WordFinder.ConsoleUI
 
                 try
                 {
-                    Wordfinder.FindPossibleWords(baseWord, out SortedSet<string> resultWords);
+                    Wordfinder.FindPossibleWords_static(baseWord, out SortedSet<string> resultWords);
                     UIManager.PrintWordList(resultWords);
                     UIManager.PrintGeneratedWordsCount(resultWords.Count, baseWord);
                     UIManager.TryAgainMassage(ref running);
