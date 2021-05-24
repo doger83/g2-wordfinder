@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using WordFinder.ConsoleUI.Massages;
 using WordFinder.Data;
 using WordFinder.Core;
+using System.Threading.Tasks;
 
 namespace WordFinder.ConsoleUI
 {
     class Application
     {
         private bool running;
-        //SortedSet<string> resultWords;
+        IEnumerable<string> resultWords;
 
         internal Application()
         {
@@ -24,9 +25,12 @@ namespace WordFinder.ConsoleUI
 
                 try
                 {
-                    Wordfinder.FindPossibleWords_static(baseWord, out SortedSet<string> resultWords);
-                    UIManager.PrintWordList(resultWords);
-                    UIManager.PrintGeneratedWordsCount(resultWords.Count, baseWord);
+                    //Wordfinder.FindPossibleWords_static(baseWord, out SortedSet<string> resultWords);
+                    resultWords = Wordfinder.FindPossibleWords_yield(baseWord);
+
+                    UIManager.PrintWordList(resultWords, out int possibleWordsCount);
+                    UIManager.PrintGeneratedWordsCount(possibleWordsCount, baseWord);
+
                     UIManager.TryAgainMassage(ref running);
                 }
                 catch (Exception e)

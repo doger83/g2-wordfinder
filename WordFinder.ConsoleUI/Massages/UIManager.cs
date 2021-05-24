@@ -17,10 +17,23 @@ namespace WordFinder.ConsoleUI.Massages
             Console.WriteLine($"You can create a total of {count} other words from the given word {baseWord}.");
         }
 
-        internal static void PrintWordList(SortedSet<string> wordList)
+        internal static void PrintWordList(IEnumerable<string> wordList, out int printedWordsCount)
         {
+            printedWordsCount = 0;
             foreach (var word in wordList)
             {
+                printedWordsCount++;
+                Console.Write("{0,-40}", word);
+            }
+            Console.WriteLine();
+        }
+
+        internal static async void PrintWordList_Async(IAsyncEnumerable<string> wordList, int printedWordsCount)
+        {
+            printedWordsCount = 0;
+            await foreach (var word in wordList)
+            {
+                printedWordsCount++;
                 Console.Write("{0,-40}", word);
             }
             Console.WriteLine();
