@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using WordFinder.Core.Helper;
 
@@ -99,35 +100,44 @@ namespace WordFinder.Core
         {
             Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
 
-            using var reader = new StreamReader(@"Data\German-Words_Dictionary_Final_Uppercase.txt");
-            for (string currentWord = reader.ReadLine(); currentWord != null; currentWord = reader.ReadLine())
+            //WordFinder.Data.Data.WordsDictionaryFinalUppercase - de - DE.txt
+            //string[] test1 = Assembly.Load("WordFinder.Data").GetManifestResourceNames();
+
+            var assembly = Assembly.Load("WordFinder.Data");
+            var resourceName = "WordFinder.Data.Data.WordsDictionaryFinalUppercase-de-DE.txt";
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (var reader = new StreamReader(stream))
             {
-                Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord);
-
-                bool canMakeCurrentWord = true;
-
-                foreach (char character in currentWordDict.Keys)
+                for (string currentWord = reader.ReadLine(); currentWord != null; currentWord = reader.ReadLine())
                 {
-                    int currentWordCharCount = currentWordDict[character];
-                    int lettersCharCount = 0;
+                    Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord);
 
-                    if (lettersCountDict.ContainsKey(character))
+                    bool canMakeCurrentWord = true;
+
+                    foreach (char character in currentWordDict.Keys)
                     {
-                        lettersCharCount = lettersCountDict[character];
+                        int currentWordCharCount = currentWordDict[character];
+                        int lettersCharCount = 0;
+
+                        if (lettersCountDict.ContainsKey(character))
+                        {
+                            lettersCharCount = lettersCountDict[character];
+                        }
+                        else
+                        {
+                            lettersCharCount = 0;
+                        }
+                        if (currentWordCharCount > lettersCharCount)
+                        {
+                            canMakeCurrentWord = false;
+                            break;
+                        }
                     }
-                    else
+                    if (canMakeCurrentWord)
                     {
-                        lettersCharCount = 0;
+                        yield return currentWord;
                     }
-                    if (currentWordCharCount > lettersCharCount)
-                    {
-                        canMakeCurrentWord = false;
-                        break;
-                    }
-                }
-                if (canMakeCurrentWord)
-                {
-                    yield return currentWord;
                 }
             }
 
