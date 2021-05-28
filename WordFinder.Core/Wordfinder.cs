@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using WordFinder.Core.Helper;
+
 
 namespace WordFinder.Core
 {
@@ -96,12 +98,85 @@ namespace WordFinder.Core
             }
         }
 
+        public static List<string> FindPossibleWords_List(string baseWord, String[] wordsDict)
+        {
+            Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
+            List<string> result = new List<string>();
+
+            foreach (var currentWord in wordsDict)
+            {
+                Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord);
+
+                bool canMakeCurrentWord = true;
+
+                foreach (char character in currentWordDict.Keys)
+                {
+                    int currentWordCharCount = currentWordDict[character];
+                    int lettersCharCount = 0;
+
+                    if (lettersCountDict.ContainsKey(character))
+                    {
+                        lettersCharCount = lettersCountDict[character];
+                    }
+                    else
+                    {
+                        lettersCharCount = 0;
+                    }
+                    if (currentWordCharCount > lettersCharCount)
+                    {
+                        canMakeCurrentWord = false;
+                        break;
+                    }
+                }
+                if (canMakeCurrentWord)
+                {
+                    result.Add(currentWord);
+                }
+            }
+            return result;
+        }
+        public static List<string> FindPossibleWords_ListParallel(string baseWord, String[] wordsDict)
+        {
+            Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
+            List<string> result = new List<string>();
+           
+            Parallel.ForEach(wordsDict, currentWord =>
+            {
+                Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord);
+
+                bool canMakeCurrentWord = true;
+
+                foreach (char character in currentWordDict.Keys)
+                {
+                    int currentWordCharCount = currentWordDict[character];
+                    int lettersCharCount = 0;
+
+                    if (lettersCountDict.ContainsKey(character))
+                    {
+                        lettersCharCount = lettersCountDict[character];
+                    }
+                    else
+                    {
+                        lettersCharCount = 0;
+                    }
+                    if (currentWordCharCount > lettersCharCount)
+                    {
+                        canMakeCurrentWord = false;
+                        break;
+                    }
+                }
+                if (canMakeCurrentWord)
+                {
+                    result.Add(currentWord);
+                }
+            });
+            return result;
+        }
         public static IEnumerable<string> FindPossibleWords_yield(string baseWord)
         {
             Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
 
-            //WordFinder.Data.Data.WordsDictionaryFinalUppercase - de - DE.txt
-            //string[] test1 = Assembly.Load("WordFinder.Data").GetManifestResourceNames();
+            // Data.Properties.Resources.Dict_de
 
             var assembly = Assembly.Load("WordFinder.Data");
             var resourceName = "WordFinder.Data.Data.WordsDictionaryFinalUppercase-de-DE.txt";
@@ -142,6 +217,12 @@ namespace WordFinder.Core
             }
 
         }
+
+
+
+
+
+        #region Async tries
 
         public static async IAsyncEnumerable<string> FindPossibleWords_yield_Async(string baseWord)
         {
@@ -241,7 +322,7 @@ namespace WordFinder.Core
             return "";
 
         }
-
+        #endregion
     }
 
 

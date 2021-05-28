@@ -10,4 +10,10 @@
     <ProjectReference Include="..\WordFinder.Data\WordFinder.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="WordsDictionaryFinalUppercase-de-DE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

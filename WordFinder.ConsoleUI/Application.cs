@@ -4,6 +4,8 @@ using WordFinder.ConsoleUI.Massages;
 using WordFinder.Data;
 using WordFinder.Core;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.IO;
 
 namespace WordFinder.ConsoleUI
 {
@@ -11,6 +13,7 @@ namespace WordFinder.ConsoleUI
     {
         private bool running;
         IEnumerable<string> resultWords;
+        String[] wordsDict = File.ReadAllLines(@".\WordsDictionaryFinalUppercase-de-DE.txt");
 
         internal Application()
         {
@@ -26,7 +29,7 @@ namespace WordFinder.ConsoleUI
                 try
                 {
                     //Wordfinder.FindPossibleWords_static(baseWord, out SortedSet<string> resultWords);
-                    resultWords = Wordfinder.FindPossibleWords_yield(baseWord);
+                    resultWords = Wordfinder.FindPossibleWords_ListParallel(baseWord, wordsDict);
 
                     UIManager.PrintWordList(resultWords, out int possibleWordsCount);
                     UIManager.PrintGeneratedWordsCount(possibleWordsCount, baseWord);

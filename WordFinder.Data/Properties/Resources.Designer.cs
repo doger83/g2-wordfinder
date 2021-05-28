@@ -106,9 +106,9 @@ namespace WordFinder.Data.Properties {
         ///AALBESTAND
         ///AALBESTÄNDE        /// [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Dictionary_de_DE {
+        public static string Dict_de {
             get {
-                return ResourceManager.GetString("Dictionary-de-DE", resourceCulture);
+                return ResourceManager.GetString("Dict.de", resourceCulture);
             }
         }
     }
