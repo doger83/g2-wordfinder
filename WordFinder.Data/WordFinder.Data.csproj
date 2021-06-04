@@ -5,10 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\WordsDictionary-de-DE - Copy.txt" />
     <None Remove="Data\WordsDictionaryFinalUppercase-de-DE.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Data\WordsDictionary-de-DE - Copy.txt" />
     <EmbeddedResource Include="Data\WordsDictionaryFinalUppercase-de-DE.txt" />
   </ItemGroup>
 

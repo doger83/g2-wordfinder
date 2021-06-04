@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using WordFinder.ConsoleUI.Massages;
-using WordFinder.Data;
-using WordFinder.Core;
-using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using WordFinder.ConsoleUI.Utils;
+using WordFinder.Core;
+using WordFinder.Data;
 
 namespace WordFinder.ConsoleUI
 {
     class Application
     {
         private bool running;
-        IEnumerable<string> resultWords;
-        String[] wordsDict = File.ReadAllLines(@".\WordsDictionaryFinalUppercase-de-DE.txt");
+        private string[] resultWords;
+        private List<string> wordsDictionary;
 
         internal Application()
         {
@@ -28,12 +31,9 @@ namespace WordFinder.ConsoleUI
 
                 try
                 {
-                    //Wordfinder.FindPossibleWords_static(baseWord, out SortedSet<string> resultWords);
-                    resultWords = Wordfinder.FindPossibleWords_ListParallel(baseWord, wordsDict);
-
+                    Wordfinder.FindPossibleWords_Parallel(baseWord, wordsDictionary, out resultWords);
                     UIManager.PrintWordList(resultWords, out int possibleWordsCount);
                     UIManager.PrintGeneratedWordsCount(possibleWordsCount, baseWord);
-
                     UIManager.TryAgainMassage(ref running);
                 }
                 catch (Exception e)
@@ -47,12 +47,32 @@ namespace WordFinder.ConsoleUI
 
         private void Initialize()
         {
+            UIManager.InitializeConsole();
+            UIManager.PrintMassage("Application loading ..");
             running = true;
-            Console.SetBufferSize(160, short.MaxValue - 1);
-            Console.SetWindowSize(160, 65);
-            //resultWords = new SortedSet<string>();
+            wordsDictionary = new List<string>();
+
+            // TODO: handle exceptions
+            // TODO: Speed? 
+            try
+            {
+                new Thread(() =>
+                {
+                    Stopwatch watch = new Stopwatch();
+                    watch.Start();
+                    DataManager.LoadWordsDictionary(wordsDictionary);
+                    watch.Stop();
+                    Console.WriteLine();
+                    Console.WriteLine(watch.ElapsedMilliseconds);
+                })
+                { IsBackground = true }.Start();
+            }
+            catch (Exception)
+            {
+
+                throw;
+
+            }
         }
     }
 }
-
-

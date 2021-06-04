@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Wordfinder.cs~RF112efca.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\WordFinder.Data\WordFinder.Data.csproj" />
   </ItemGroup>
 

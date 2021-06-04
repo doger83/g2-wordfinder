@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,41 +15,39 @@ namespace WordFinder.Core
     {
         public static void FindAndPrintPossibleWords_Basic(string baseWord, out int possibleWordsCount)
         {
-            Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
+            var lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
             possibleWordsCount = 0;
 
-            using (var reader = new StreamReader(@"Data\German-Words_Dictionary_Final_Uppercase.txt"))
+            using var reader = new StreamReader(@"Data\German-Words_Dictionary_Final_Uppercase.txt");
+            for (string currentWord = reader.ReadLine(); currentWord != null; currentWord = reader.ReadLine())
             {
-                for (string currentWord = reader.ReadLine(); currentWord != null; currentWord = reader.ReadLine())
+                Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord.ToUpper());
+
+                bool canMakeCurrentWord = true;
+
+                foreach (char character in currentWordDict.Keys)
                 {
-                    Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord.ToUpper());
+                    int currentWordCharCount = currentWordDict[character];
+                    int lettersCharCount = 0;
 
-                    bool canMakeCurrentWord = true;
-
-                    foreach (char character in currentWordDict.Keys)
+                    if (lettersCountDict.ContainsKey(character))
                     {
-                        int currentWordCharCount = currentWordDict[character];
-                        int lettersCharCount = 0;
-
-                        if (lettersCountDict.ContainsKey(character))
-                        {
-                            lettersCharCount = lettersCountDict[character];
-                        }
-                        else
-                        {
-                            lettersCharCount = 0;
-                        }
-                        if (currentWordCharCount > lettersCharCount)
-                        {
-                            canMakeCurrentWord = false;
-                            break;
-                        }
+                        lettersCharCount = lettersCountDict[character];
                     }
-                    if (canMakeCurrentWord)
+                    else
                     {
-                        possibleWordsCount++;
-                        Console.Write("{0,-40}", currentWord);
+                        lettersCharCount = 0;
                     }
+                    if (currentWordCharCount > lettersCharCount)
+                    {
+                        canMakeCurrentWord = false;
+                        break;
+                    }
+                }
+                if (canMakeCurrentWord)
+                {
+                    possibleWordsCount++;
+                    Console.Write("{0,-40}", currentWord);
                 }
             }
         }
@@ -135,21 +134,24 @@ namespace WordFinder.Core
             }
             return result;
         }
-        public static List<string> FindPossibleWords_ListParallel(string baseWord, String[] wordsDict)
+
+        public static void FindPossibleWords_Parallel(string baseWord, List<string> inputDict, out string[] resultDict)
         {
-            Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
-            List<string> result = new List<string>();
-           
-            Parallel.ForEach(wordsDict, currentWord =>
+            // TODO: make async?
+            var lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
+            var resultSet        = new SortedSet<string>();
+            var options          = new ParallelOptions{MaxDegreeOfParallelism = 500};
+            var Locker           = new object();
+
+            Parallel.ForEach(inputDict, currentWord =>
             {
                 Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord);
-
-                bool canMakeCurrentWord = true;
+                bool canMakeCurrentWord               = true;
 
                 foreach (char character in currentWordDict.Keys)
                 {
                     int currentWordCharCount = currentWordDict[character];
-                    int lettersCharCount = 0;
+                    int lettersCharCount     = 0;
 
                     if (lettersCountDict.ContainsKey(character))
                     {
@@ -167,62 +169,58 @@ namespace WordFinder.Core
                 }
                 if (canMakeCurrentWord)
                 {
-                    result.Add(currentWord);
+                    lock (Locker)
+                    {
+
+                        resultSet.Add(currentWord);
+                    }
                 }
             });
-            return result;
+            resultDict = resultSet.ToArray();
         }
+
+
         public static IEnumerable<string> FindPossibleWords_yield(string baseWord)
         {
-            Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
+            var lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
+            var assembly         = Assembly.Load("WordFinder.Data");
+            var resourceName     = "WordFinder.Data.Data.WordsDictionaryFinalUppercase-de-DE.txt";
 
-            // Data.Properties.Resources.Dict_de
-
-            var assembly = Assembly.Load("WordFinder.Data");
-            var resourceName = "WordFinder.Data.Data.WordsDictionaryFinalUppercase-de-DE.txt";
-
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            using (var reader = new StreamReader(stream))
+            using Stream stream = assembly.GetManifestResourceStream(resourceName);
+            using var reader    = new StreamReader(stream);
+            for (string currentWord = reader.ReadLine(); currentWord != null; currentWord = reader.ReadLine())
             {
-                for (string currentWord = reader.ReadLine(); currentWord != null; currentWord = reader.ReadLine())
+                var currentWordDict    = CharacterCounter.getCharacterCountDict(currentWord);
+                var canMakeCurrentWord = true;
+
+                foreach (char character in currentWordDict.Keys)
                 {
-                    Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord);
+                    int currentWordCharCount = currentWordDict[character];
+                    int lettersCharCount     = 0;
 
-                    bool canMakeCurrentWord = true;
-
-                    foreach (char character in currentWordDict.Keys)
+                    if (lettersCountDict.ContainsKey(character))
                     {
-                        int currentWordCharCount = currentWordDict[character];
-                        int lettersCharCount = 0;
-
-                        if (lettersCountDict.ContainsKey(character))
-                        {
-                            lettersCharCount = lettersCountDict[character];
-                        }
-                        else
-                        {
-                            lettersCharCount = 0;
-                        }
-                        if (currentWordCharCount > lettersCharCount)
-                        {
-                            canMakeCurrentWord = false;
-                            break;
-                        }
+                        lettersCharCount = lettersCountDict[character];
                     }
-                    if (canMakeCurrentWord)
+                    else
                     {
-                        yield return currentWord;
+                        lettersCharCount = 0;
                     }
+                    if (currentWordCharCount > lettersCharCount)
+                    {
+                        canMakeCurrentWord = false;
+                        break;
+                    }
+                }
+                if (canMakeCurrentWord)
+                {
+                    yield return currentWord;
                 }
             }
 
         }
 
-
-
-
-
-        #region Async tries
+        #region Async trys
 
         public static async IAsyncEnumerable<string> FindPossibleWords_yield_Async(string baseWord)
         {
@@ -324,7 +322,5 @@ namespace WordFinder.Core
         }
         #endregion
     }
-
-
 }
 
