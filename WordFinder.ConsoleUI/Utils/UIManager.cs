@@ -76,7 +76,7 @@ namespace WordFinder.ConsoleUI.Utils
             Console.WriteLine($"You can create a total of {count} other words from the given word {baseWord}.");
         }
 
-        internal static void PrintWordList(string[] wordList, out int printedWordsCount)
+        internal static void PrintWordList(IEnumerable<string> wordList, out int printedWordsCount)
         {
             printedWordsCount = 0;
             foreach (var word in wordList)
