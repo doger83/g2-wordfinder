@@ -16,7 +16,7 @@ namespace WordFinder.Data
             string currentWord;
 
             var assembly        = Assembly.Load("WordFinder.Data");
-            var resourceName    = "WordFinder.Data.Data.WordsDictionaryFinalUppercase-d-DE.txt";
+            var resourceName    = "WordFinder.Data.Data.WordsDictionaryFinalUppercase-de-DE.txt";
             //try
             //{
             using Stream stream = assembly.GetManifestResourceStream(resourceName) ?? throw new FileNotFoundException("Resource not found","WordsDictionaryFinalUppercase-d-DE.txt");

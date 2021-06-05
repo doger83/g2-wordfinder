@@ -15,7 +15,7 @@ namespace WordFinder.ConsoleUI
     class Application
     {
         // TODO: continueRunning static or volatile?
-        private volatile bool continueRunning;
+        private bool continueRunning;
         private string[] resultWords;
         private List<string> wordsDictionary;
 
@@ -23,30 +23,6 @@ namespace WordFinder.ConsoleUI
         {
             Initialize();
         }
-
-        internal void Run()
-        {
-            while (continueRunning)
-            {
-                UIManager.AskForNewWord(out string baseWord);
-
-                //try
-                //{
-                Wordfinder.FindPossibleWords_Parallel(baseWord, wordsDictionary, out resultWords);
-                UIManager.PrintWordList(resultWords, out int possibleWordsCount);
-                UIManager.PrintGeneratedWordsCount(possibleWordsCount, baseWord);
-                UIManager.TryAgainMassage(ref continueRunning);
-                //}
-                //catch (Exception)
-                //{
-                //    throw;
-                //    //UIManager.HandleException(ex);
-                //    //continueRunning = false;
-                //}
-            }
-            UIManager.ProgrammEndsMassage();
-        }
-
         private void Initialize()
         {
             UIManager.InitializeConsole();
@@ -72,6 +48,30 @@ namespace WordFinder.ConsoleUI
             backgroundWorker.Start();
             backgroundWorker.Join();
         }
+        internal void Run()
+        {
+            while (continueRunning)
+            {
+                UIManager.AskForNewWord(out string baseWord);
+
+                //try
+                //{
+                Wordfinder.FindPossibleWords_Parallel(baseWord, wordsDictionary, out resultWords);
+                UIManager.PrintWordList(resultWords, out int possibleWordsCount);
+                UIManager.PrintGeneratedWordsCount(possibleWordsCount, baseWord);
+                UIManager.TryAgainMassage(ref continueRunning);
+                //}
+                //catch (Exception)
+                //{
+                //    throw;
+                //    //UIManager.HandleException(ex);
+                //    //continueRunning = false;
+                //}
+            }
+            UIManager.ProgrammEndsMassage();
+        }
+
+
 
 
         private void SafeExecute(Action action, Action<Exception> handleException)
@@ -83,7 +83,6 @@ namespace WordFinder.ConsoleUI
             }
             catch (Exception exc)
             {
-
                 exception = exc;
                 Console.Clear();
                 handleException(exception);
@@ -92,7 +91,6 @@ namespace WordFinder.ConsoleUI
             {
                 if (exception != null)
                 {
-
                     continueRunning = false;
                 }
 

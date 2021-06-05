@@ -147,11 +147,12 @@ namespace WordFinder.Core
             {
                 Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord);
                 bool canMakeCurrentWord               = true;
-
+                int currentWordCharCount;
+                int lettersCharCount;
                 foreach (char character in currentWordDict.Keys)
                 {
-                    int currentWordCharCount = currentWordDict[character];
-                    int lettersCharCount     = 0;
+                    currentWordCharCount = currentWordDict[character];
+                    lettersCharCount = 0;
 
                     if (lettersCountDict.ContainsKey(character))
                     {
@@ -171,7 +172,6 @@ namespace WordFinder.Core
                 {
                     lock (Locker)
                     {
-
                         resultSet.Add(currentWord);
                     }
                 }
