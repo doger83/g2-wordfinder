@@ -14,7 +14,8 @@ namespace WordFinder.ConsoleUI
 {
     class Application
     {
-        private bool running;
+        // TODO: continueRunning static or volatile?
+        private volatile bool continueRunning;
         private string[] resultWords;
         private List<string> wordsDictionary;
 
@@ -25,22 +26,23 @@ namespace WordFinder.ConsoleUI
 
         internal void Run()
         {
-            while (running)
+            while (continueRunning)
             {
                 UIManager.AskForNewWord(out string baseWord);
 
-                try
-                {
-                    Wordfinder.FindPossibleWords_Parallel(baseWord, wordsDictionary, out resultWords);
-                    UIManager.PrintWordList(resultWords, out int possibleWordsCount);
-                    UIManager.PrintGeneratedWordsCount(possibleWordsCount, baseWord);
-                    UIManager.TryAgainMassage(ref running);
-                }
-                catch (Exception e)
-                {
-                    UIManager.ShowErrorMassage(e.Message);
-                    running = false;
-                }
+                //try
+                //{
+                Wordfinder.FindPossibleWords_Parallel(baseWord, wordsDictionary, out resultWords);
+                UIManager.PrintWordList(resultWords, out int possibleWordsCount);
+                UIManager.PrintGeneratedWordsCount(possibleWordsCount, baseWord);
+                UIManager.TryAgainMassage(ref continueRunning);
+                //}
+                //catch (Exception)
+                //{
+                //    throw;
+                //    //UIManager.HandleException(ex);
+                //    //continueRunning = false;
+                //}
             }
             UIManager.ProgrammEndsMassage();
         }
@@ -49,28 +51,50 @@ namespace WordFinder.ConsoleUI
         {
             UIManager.InitializeConsole();
             UIManager.PrintMassage("Application loading ..");
-            running = true;
             wordsDictionary = new List<string>();
+            continueRunning = true;
 
-            // TODO: handle exceptions
-            // TODO: Speed? 
+            //Exception threadException = null;
+            Thread backgroundWorker = new Thread(() =>
+            {
+                //try
+                //{
+                SafeExecute(()=> DataManager.LoadWordsDictionary(wordsDictionary), UIManager.HandleException);
+                //}
+                //catch (Exception ex)
+                //{
+                //    threadException = ex;
+                //    //throw new Exception(ex.Message);
+                //}
+
+            })
+            { IsBackground = true };
+            backgroundWorker.Start();
+            backgroundWorker.Join();
+        }
+
+
+        private void SafeExecute(Action action, Action<Exception> handleException)
+        {
+            Exception exception = null;
             try
             {
-                new Thread(() =>
-                {
-                    Stopwatch watch = new Stopwatch();
-                    watch.Start();
-                    DataManager.LoadWordsDictionary(wordsDictionary);
-                    watch.Stop();
-                    Console.WriteLine();
-                    Console.WriteLine(watch.ElapsedMilliseconds);
-                })
-                { IsBackground = true }.Start();
+                action.Invoke();
             }
-            catch (Exception)
+            catch (Exception exc)
             {
 
-                throw;
+                exception = exc;
+                Console.Clear();
+                handleException(exception);
+            }
+            finally
+            {
+                if (exception != null)
+                {
+
+                    continueRunning = false;
+                }
 
             }
         }

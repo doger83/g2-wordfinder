@@ -1,4 +1,5 @@
 ﻿using System;
+using WordFinder.ConsoleUI.Utils;
 
 namespace WordFinder.ConsoleUI
 {
@@ -6,8 +7,17 @@ namespace WordFinder.ConsoleUI
     {
         static void Main()
         {
-            Application App = new Application();
-            App.Run();
+            try
+            {
+                Application App = new Application();
+                App.Run();
+            }
+            catch (Exception ex)
+            {
+                UIManager.HandleException(ex);
+
+                UIManager.ProgrammEndsMassage();
+            }
         }
     }
 }

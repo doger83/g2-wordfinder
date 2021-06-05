@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,14 +14,22 @@ namespace WordFinder.Data
         public static void LoadWordsDictionary(List<string> wordsDictionary)
         {
             string currentWord;
+
             var assembly        = Assembly.Load("WordFinder.Data");
-            var resourceName    = "WordFinder.Data.Data.WordsDictionaryFinalUppercase-de-DE.txt";
-            using Stream stream = assembly.GetManifestResourceStream(resourceName);
+            var resourceName    = "WordFinder.Data.Data.WordsDictionaryFinalUppercase-d-DE.txt";
+            //try
+            //{
+            using Stream stream = assembly.GetManifestResourceStream(resourceName) ?? throw new FileNotFoundException("Resource not found","WordsDictionaryFinalUppercase-d-DE.txt");
             using var reader    = new StreamReader(stream);
             while ((currentWord = reader.ReadLine()) != null)
             {
                 wordsDictionary.Add(currentWord);
             }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
         }
 
         public static void LoadWordsDictionary(List<string> wordsDictionary, Languages language)

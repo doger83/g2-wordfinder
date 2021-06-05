@@ -59,57 +59,5 @@ namespace WordFinder.Data.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to AABEL
-        ///AACH
-        ///AACHEN
-        ///AACHENAUFENTHALT
-        ///AACHENBESUCH
-        ///AACHENER
-        ///AACHENERIN
-        ///AACHENERINNEN
-        ///AACHENERN
-        ///AACHENERS
-        ///AACHENFAHRT
-        ///AACHENFAHRTEN
-        ///AACHENREISE
-        ///AACHENREISEN
-        ///AACHENS
-        ///AACHTAL
-        ///AADORF
-        ///AADORFS
-        ///AAL
-        ///AALÄHNLICH
-        ///AALÄHNLICHE
-        ///AALÄHNLICHEM
-        ///AALÄHNLICHEN
-        ///AALÄHNLICHER
-        ///AALÄHNLICHES
-        ///AALANGELFISCHEREI
-        ///AALANGELN
-        ///AALANGELNS
-        ///AALART
-        ///AALARTEN
-        ///AALARTIG
-        ///AALARTIGE
-        ///AALARTIGEM
-        ///AALARTIGEN
-        ///AALARTIGER
-        ///AALARTIGES
-        ///AALBARSCH
-        ///AALBARSCHE
-        ///AALBARSCHEN
-        ///AALBARSCHES
-        ///AALBARSCHS
-        ///AALBEERE
-        ///AALBESTAND
-        ///AALBESTÄNDE        /// [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string Dict_de {
-            get {
-                return ResourceManager.GetString("Dict.de", resourceCulture);
-            }
-        }
     }
 }

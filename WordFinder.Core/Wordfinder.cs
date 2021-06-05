@@ -15,13 +15,13 @@ namespace WordFinder.Core
     {
         public static void FindAndPrintPossibleWords_Basic(string baseWord, out int possibleWordsCount)
         {
-            var lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
+            var lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
             possibleWordsCount = 0;
 
             using var reader = new StreamReader(@"Data\German-Words_Dictionary_Final_Uppercase.txt");
             for (string currentWord = reader.ReadLine(); currentWord != null; currentWord = reader.ReadLine())
             {
-                Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord.ToUpper());
+                Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord.ToUpper());
 
                 bool canMakeCurrentWord = true;
 
@@ -55,14 +55,14 @@ namespace WordFinder.Core
         public static void FindPossibleWords_static(string baseWord, out SortedSet<string> resultList)
         {
             resultList = new SortedSet<string>();
-            Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
+            Dictionary<char, int> lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
 
             try
             {
                 using var reader = new StreamReader(@"Data\German-Words_Dictionary_Final_Uppercase.txt");
                 for (string currentWord = reader.ReadLine(); currentWord != null; currentWord = reader.ReadLine())
                 {
-                    Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord);
+                    Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord);
 
                     bool canMakeCurrentWord = true;
 
@@ -99,12 +99,12 @@ namespace WordFinder.Core
 
         public static List<string> FindPossibleWords_List(string baseWord, String[] wordsDict)
         {
-            Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
+            Dictionary<char, int> lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
             List<string> result = new List<string>();
 
             foreach (var currentWord in wordsDict)
             {
-                Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord);
+                Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord);
 
                 bool canMakeCurrentWord = true;
 
@@ -138,14 +138,14 @@ namespace WordFinder.Core
         public static void FindPossibleWords_Parallel(string baseWord, List<string> inputDict, out string[] resultDict)
         {
             // TODO: make async?
-            var lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
+            var lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
             var resultSet        = new SortedSet<string>();
             var options          = new ParallelOptions{MaxDegreeOfParallelism = 500};
             var Locker           = new object();
 
             Parallel.ForEach(inputDict, currentWord =>
             {
-                Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord);
+                Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord);
                 bool canMakeCurrentWord               = true;
 
                 foreach (char character in currentWordDict.Keys)
@@ -182,7 +182,7 @@ namespace WordFinder.Core
 
         public static IEnumerable<string> FindPossibleWords_yield(string baseWord)
         {
-            var lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
+            var lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
             var assembly         = Assembly.Load("WordFinder.Data");
             var resourceName     = "WordFinder.Data.Data.WordsDictionaryFinalUppercase-de-DE.txt";
 
@@ -190,7 +190,7 @@ namespace WordFinder.Core
             using var reader    = new StreamReader(stream);
             for (string currentWord = reader.ReadLine(); currentWord != null; currentWord = reader.ReadLine())
             {
-                var currentWordDict    = CharacterCounter.getCharacterCountDict(currentWord);
+                var currentWordDict    = CharacterCounter.GetCharacterCountDict(currentWord);
                 var canMakeCurrentWord = true;
 
                 foreach (char character in currentWordDict.Keys)
@@ -224,12 +224,12 @@ namespace WordFinder.Core
 
         public static async IAsyncEnumerable<string> FindPossibleWords_yield_Async(string baseWord)
         {
-            Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
+            Dictionary<char, int> lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
             string currentWord;
             using var reader = new StreamReader(@"Data\German-Words_Dictionary_Final_Uppercase.txt");
             while ((currentWord = await reader.ReadLineAsync()) != null)
             {
-                Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord);
+                Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord);
 
                 bool canMakeCurrentWord = true;
 
@@ -265,11 +265,11 @@ namespace WordFinder.Core
             resultList = new SortedSet<string>();
             List<string> wordList = File.ReadAllLines(@"Data\German-Words_Dictionary_Final_Uppercase.txt").ToList();
 
-            Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
+            Dictionary<char, int> lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
 
             foreach (var currentWord in wordList)
             {
-                Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord);
+                Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord);
 
                 resultList.Add(await Task.Run(() => CanMakeCurrentWord(currentWordDict, lettersCountDict, currentWord)));
             }
@@ -279,11 +279,11 @@ namespace WordFinder.Core
         {
             List<string> wordList = File.ReadAllLines(@"Data\German-Words_Dictionary_Final_Uppercase.txt").ToList();
 
-            Dictionary<char, int> lettersCountDict = CharacterCounter.getCharacterCountDict(baseWord);
+            Dictionary<char, int> lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
 
             foreach (var currentWord in wordList)
             {
-                Dictionary<char, int> currentWordDict = CharacterCounter.getCharacterCountDict(currentWord);
+                Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord);
 
                 resultList.Add(CanMakeCurrentWord(currentWordDict, lettersCountDict, currentWord));
             }

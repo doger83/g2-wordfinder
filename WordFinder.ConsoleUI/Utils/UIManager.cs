@@ -7,7 +7,8 @@ namespace WordFinder.ConsoleUI.Utils
     {
         #region initialization
         internal static void InitializeConsole()
-        {   // TODO: check lokal system for height and width center startup position
+        {
+            Console.Title = "Wordfinder 1.0";
             Console.SetWindowSize(160, Console.LargestWindowHeight - 15);
             Console.SetBufferSize(160, short.MaxValue - 1);
             ConsoleUtils.CenterConsole();
@@ -34,6 +35,7 @@ namespace WordFinder.ConsoleUI.Utils
             Console.Write("Error: ");
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(errorMassage + "\n");
+            Console.WriteLine();
         }
         internal static void TryAgainMassage(ref bool continueRunning)
         {
@@ -65,6 +67,7 @@ namespace WordFinder.ConsoleUI.Utils
             Console.WriteLine();
             Console.WriteLine("Hit ENTER to close the App..");
             Console.ReadKey(true);
+
         }
 
         #endregion
@@ -74,6 +77,7 @@ namespace WordFinder.ConsoleUI.Utils
         {
             Console.WriteLine();
             Console.WriteLine($"You can create a total of {count} other words from the given word {baseWord}.");
+            //throw new Exception("Test exception from debugging");
         }
 
         internal static void PrintWordList(IEnumerable<string> wordList, out int printedWordsCount)
@@ -98,6 +102,24 @@ namespace WordFinder.ConsoleUI.Utils
             }
             Console.WriteLine();
         }
+
+        #endregion
+
+        #region Exceptions
+
+        public static void HandleException(Exception ex)
+        {
+            Console.Clear();
+            Console.WriteLine();
+            Console.WriteLine("UPS ;( Something went wrong!");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("Error: ");
+            Console.ResetColor();
+            Console.Write(ex.ToString());
+            Console.WriteLine();
+
+        }
+
 
         #endregion
 
