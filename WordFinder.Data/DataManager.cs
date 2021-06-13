@@ -14,7 +14,6 @@ namespace WordFinder.Data
         public static void LoadWordsDictionary(List<string> wordsDictionary)
         {
             string currentWord;
-
             var assembly        = Assembly.Load("WordFinder.Data");
             var resourceName    = "WordFinder.Data.Data.WordsDictionaryFinalUppercase-de-DE.txt";
             //try

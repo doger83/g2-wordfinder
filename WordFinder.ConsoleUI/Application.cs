@@ -35,7 +35,7 @@ namespace WordFinder.ConsoleUI
             {
                 //try
                 //{
-                SafeExecute(()=> DataManager.LoadWordsDictionary(wordsDictionary), UIManager.HandleException);
+                SafeExecute(() => DataManager.LoadWordsDictionary(wordsDictionary), UIManager.HandleException);
                 //}
                 //catch (Exception ex)
                 //{
@@ -56,7 +56,9 @@ namespace WordFinder.ConsoleUI
 
                 //try
                 //{
-                Wordfinder.FindPossibleWords_Parallel(baseWord, wordsDictionary, out resultWords);
+                //Wordfinder.FindPossibleWords_Parallel(baseWord, wordsDictionary, out resultWords);
+                Wordfinder.FindPossibleWords_Parallel_return_new2(baseWord, wordsDictionary, out resultWords);
+                //Wordfinder.FindPossibleWords_Parallel_Span(baseWord, wordsDictionary, out resultWords);
                 UIManager.PrintWordList(resultWords, out int possibleWordsCount);
                 UIManager.PrintGeneratedWordsCount(possibleWordsCount, baseWord);
                 UIManager.TryAgainMassage(ref continueRunning);

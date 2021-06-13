@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WordFinder.Core\WordFinder.Core.csproj" />
+    <ProjectReference Include="..\WordFinder.Data\WordFinder.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\WordsDictionaryFinalUppercase-de-DE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="WordsDictionaryFinalUppercase-de-DE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
