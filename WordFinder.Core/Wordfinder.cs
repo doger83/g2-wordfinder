@@ -143,6 +143,10 @@ namespace WordFinder.Core
 
             Parallel.ForEach(inputDict, currentWord =>
             {
+                if (currentWord.Length > baseWord.Length)
+                {
+                    return;
+                }
                 Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord);
 
                 bool canMakeCurrentWord = true;
@@ -188,11 +192,15 @@ namespace WordFinder.Core
 
             Parallel.ForEach(inputDict, currentWord =>
             {
-                Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord);
-                if (currentWordDict.Count > lettersCountDict.Count)
+                if (currentWord.Length > baseWord.Length)
                 {
                     return;
                 }
+                Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord);
+                //if (currentWordDict.Count > lettersCountDict.Count)
+                //{
+                //    return;
+                //}
                 //bool canMakeCurrentWord = true;
                 int currentWordCharCount;
                 int lettersCharCount;
@@ -236,11 +244,15 @@ namespace WordFinder.Core
 
             Parallel.ForEach(inputDict, currentWord =>
             {
-                Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord);
-                if (currentWordDict.Count > lettersCountDict.Count)
+                if (currentWord.Length > baseWord.Length)
                 {
                     return;
                 }
+                Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord);
+                //if (currentWordDict.Count > lettersCountDict.Count)
+                //{
+                //    return;
+                //}
                 //bool canMakeCurrentWord = true;
                 int currentWordCharCount;
                 int lettersCharCount;
@@ -285,11 +297,15 @@ namespace WordFinder.Core
 
             Parallel.ForEach(inputDict, currentWord =>
             {
-                Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord);
-                if (currentWordDict.Count > lettersCountDict.Count)
+                if (currentWord.Length > baseWord.Length)
                 {
                     return;
                 }
+                Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(currentWord);
+                //if (currentWordDict.Count > lettersCountDict.Count)
+                //{
+                //    return;
+                //}
                 //bool canMakeCurrentWord = true;
                 int currentWordCharCount;
                 int lettersCharCount;
@@ -306,21 +322,22 @@ namespace WordFinder.Core
 
                 foreach (char character in currentWordDict.Keys)
                 {
-                    currentWordCharCount = currentWordDict[character];
-                    lettersCharCount = 0;
                     if (!lettersCountDict.ContainsKey(character))
                     {
                         return;
                     }
+                    currentWordCharCount = currentWordDict[character];
+                    //lettersCharCount = 0;
+
 
                     lettersCharCount = lettersCountDict[character];
-
 
                     if (currentWordCharCount > lettersCharCount)
                     {
                         //canMakeCurrentWord = false;
                         return;
                     }
+
                 }
                 //if (canMakeCurrentWord)
                 //{
@@ -333,19 +350,215 @@ namespace WordFinder.Core
             resultDict = resultSet.ToArray();
         }
 
-        public static void FindPossibleWords_Parallel_Span(string baseWord, List<string> inputDict, out string[] resultDict)
+        public static void FindPossibleWords_Parallel_Scramble(string baseWord, List<string> inputDict, out string[] resultDict)
         {
             // TODO: make async?
-            var inputSpan = new ReadOnlySpan<string>(inputDict.ToArray());
+            var lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
+            var resultSet = new SortedSet<string>();
+            var Locker = new object();
+            //ParallelLoopState state = new ParallelLoopState(;
+
+            Parallel.ForEach(inputDict, currentWord =>
+            {
+                if (Scramble(baseWord, currentWord))
+                {
+                    lock (Locker)
+                    {
+                        resultSet.Add(currentWord);
+                    }
+                }
+            });
+            resultDict = resultSet.ToArray();
+        }
+        public static bool Scramble(string str1, string str2)
+        {
+            //return str2.All(x => str1.Count(y => y == x) >= str2.Count(y => y == x));
+            return str2.All(s => str2.Count(c => c == s) <= str1.Count(c => c == s));
+        }
+        public static void FindPossibleWords_Parallel_Scramble_foreach(string baseWord, List<string> inputDict, out string[] resultDict)
+        {
+            // TODO: make async?
+            var lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
+            var resultSet = new SortedSet<string>();
+            var Locker = new object();
+            //ParallelLoopState state = new ParallelLoopState(;
+
+            Parallel.ForEach(inputDict, currentWord =>
+            {
+                if (Scramble_foreach(baseWord, currentWord))
+                {
+                    lock (Locker)
+                    {
+                        resultSet.Add(currentWord);
+                    }
+                }
+            });
+            resultDict = resultSet.ToArray();
+        }
+        public static bool Scramble_foreach(string str1, string str2)
+        {
+            var possible = str1.ToList();
+
+            foreach (var c in str2)
+            {
+                if (!possible.Remove(c))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public static void FindPossibleWords_Parallel_Scramble_groupby(string baseWord, List<string> inputDict, out string[] resultDict)
+        {
+            // TODO: make async?
+            var lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
+            var resultSet = new SortedSet<string>();
+            var Locker = new object();
+            //ParallelLoopState state = new ParallelLoopState(;
+
+            Parallel.ForEach(inputDict, currentWord =>
+            {
+                if (Scramble_groupby(baseWord, currentWord))
+                {
+                    lock (Locker)
+                    {
+                        resultSet.Add(currentWord);
+                    }
+                }
+            });
+            resultDict = resultSet.ToArray();
+        }
+        public static bool Scramble_groupby(string str1, string str2)
+        {
+            return str2.GroupBy(c => c).All(g => str1.Where(c => c == g.Key).Count() >= g.Count());
+        }
+
+        public static void FindPossibleWords_Parallel_Scramble_2foreach(string baseWord, List<string> inputDict, out string[] resultDict)
+        {
+            // TODO: make async?
+            var lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
+            var resultSet = new SortedSet<string>();
+            var Locker = new object();
+            //ParallelLoopState state = new ParallelLoopState(;
+
+            Parallel.ForEach(inputDict, currentWord =>
+            {
+                if (Scramble_2foreach(baseWord, currentWord))
+                {
+                    lock (Locker)
+                    {
+                        resultSet.Add(currentWord);
+                    }
+                }
+            });
+            resultDict = resultSet.ToArray();
+        }
+        public static bool Scramble_2foreach(string str1, string str2)
+        {
+            bool canScramble = true;
+            int[] charCount = new int['z' - 'a'];
+            foreach (var c in str1)
+            {
+                charCount[c - 'a']++;
+            }
+            foreach (var c in str2)
+            {
+                charCount[c - 'a']--;
+                if (charCount[c - 'a'] < 0)
+                {
+                    canScramble = false;
+                    break;
+                }
+            }
+            return canScramble;
+        }
+
+        public static void FindPossibleWords_Parallel_Scramble_foreachCount(string baseWord, List<string> inputDict, out string[] resultDict)
+        {
+            // TODO: make async?
+            var lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
+            var resultSet = new SortedSet<string>();
+            var Locker = new object();
+            //ParallelLoopState state = new ParallelLoopState(;
+
+            Parallel.ForEach(inputDict, currentWord =>
+            {
+                if (Scramble_foreachCount(baseWord, currentWord))
+                {
+                    lock (Locker)
+                    {
+                        resultSet.Add(currentWord);
+                    }
+                }
+            });
+            resultDict = resultSet.ToArray();
+        }
+        public static bool Scramble_foreachCount(string str1, string str2)
+        {
+            foreach (var letter in str2)
+            {
+                var str2count = str2.Count(x => x == letter);
+                var str1count = str1.Count(x => x == letter);
+                if (str1.Contains(letter) && str2count <= str1count)
+                {
+                    continue;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static void FindPossibleWords_Parallel_Scramble_ifFor(string baseWord, List<string> inputDict, out string[] resultDict)
+        {
+            // TODO: make async?
+            var lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
+            var resultSet = new SortedSet<string>();
+            var Locker = new object();
+            //ParallelLoopState state = new ParallelLoopState(;
+
+            Parallel.ForEach(inputDict, currentWord =>
+            {
+                if (Scramble_ifFor(baseWord, currentWord))
+                {
+                    lock (Locker)
+                    {
+                        resultSet.Add(currentWord);
+                    }
+                }
+            });
+            resultDict = resultSet.ToArray();
+        }
+        public static bool Scramble_ifFor(string str1, string str2)
+        {
+            if (str2.Length > str1.Length)
+                return false;
+            for (int i = 0; i < str2.Length; i++)
+            {
+                var b = str1.Contains(str2[i]);
+                if (b)
+                    str1 = str1.Remove(str1.IndexOf(str2[i]), 1);
+                else
+                    return false;
+            }
+            return true;
+        }
+
+
+        public static void FindPossibleWords_Parallel_Span(string baseWord, ReadOnlySpan<string> inputDict, out string[] resultDict)
+        {
+            // TODO: make async?
+
 
             var lettersCountDict = CharacterCounter.GetCharacterCountDict(baseWord);
             var resultSet = new SortedSet<string>();
 
-            string currentWord = "";
-            for (int i = 0; i < inputSpan.Length; i++)
+            for (int i = 0; i < inputDict.Length; i++)
             {
                 //currentWord = inputSpan.Slice(i, 1)[0].ToString();
-                Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(inputSpan[i]);
+                Dictionary<char, int> currentWordDict = CharacterCounter.GetCharacterCountDict(inputDict[i]);
                 if (currentWordDict.Count > lettersCountDict.Count)
                 {
                     continue;
@@ -375,7 +588,7 @@ namespace WordFinder.Core
                 if (canMakeCurrentWord)
                 {
 
-                    resultSet.Add(inputSpan[i]);
+                    resultSet.Add(inputDict[i]);
 
                 }
             }

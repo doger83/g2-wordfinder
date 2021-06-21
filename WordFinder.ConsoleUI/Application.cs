@@ -57,7 +57,8 @@ namespace WordFinder.ConsoleUI
                 //try
                 //{
                 //Wordfinder.FindPossibleWords_Parallel(baseWord, wordsDictionary, out resultWords);
-                Wordfinder.FindPossibleWords_Parallel_return_new2(baseWord, wordsDictionary, out resultWords);
+                //Wordfinder.FindPossibleWords_Parallel_return_new2(baseWord, wordsDictionary, out resultWords);
+                Wordfinder.FindPossibleWords_Parallel_Scramble_ifFor(baseWord, wordsDictionary, out resultWords);
                 //Wordfinder.FindPossibleWords_Parallel_Span(baseWord, wordsDictionary, out resultWords);
                 UIManager.PrintWordList(resultWords, out int possibleWordsCount);
                 UIManager.PrintGeneratedWordsCount(possibleWordsCount, baseWord);
