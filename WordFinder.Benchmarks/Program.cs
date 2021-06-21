@@ -6,7 +6,7 @@ namespace WordFinder.Benchmarks
     {
         static void Main(string[] args)
         {
-            _ = BenchmarkRunner.Run<CharacterCounterBenchmarks>();
+            BenchmarkRunner.Run<WordFinderBenchmarks>();
         }
     }
 }
