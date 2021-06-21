@@ -50,16 +50,14 @@ namespace WordFinder.ConsoleUI.Utils
                     Console.Clear();
                     break;
                 }
-                else if (input == "n")
+                if (input == "n")
                 {
                     continueRunning = false;
                     break;
                 }
-                else
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Wrong input. Please try again.");
-                }
+                Console.WriteLine();
+                Console.WriteLine("Wrong input. Please try again.");
+
             }
         }
         internal static void ProgrammEndsMassage()
