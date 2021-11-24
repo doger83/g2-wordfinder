@@ -59,11 +59,11 @@ namespace WordFinder.Core.Helper
             }
             return result;
         }
-        private static string SortString(string input)
-        {
-            char[] characters = input.ToLower().ToArray();
-            Array.Sort(characters);
-            return new string(characters);
-        }
+        //private static string SortString(string input)
+        //{
+        //    char[] characters = input.ToLower().ToArray();
+        //    Array.Sort(characters);
+        //    return new string(characters);
+        //}
     }
 }

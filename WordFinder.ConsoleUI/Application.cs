@@ -29,7 +29,7 @@ namespace WordFinder.ConsoleUI
             UIManager.PrintMassage("Application loading ..");
             wordsDictionary = new List<string>();
             continueRunning = true;
-
+            // TODO try?
             //Exception threadException = null;
             Thread backgroundWorker = new Thread(() =>
             {
@@ -53,7 +53,7 @@ namespace WordFinder.ConsoleUI
             while (continueRunning)
             {
                 UIManager.AskForNewWord(out string baseWord);
-
+                // TODO try?
                 //try
                 //{
                 //Wordfinder.FindPossibleWords_Parallel(baseWord, wordsDictionary, out resultWords);

@@ -11,6 +11,7 @@ namespace WordFinder.ConsoleUI
             //{
             Application App = new Application();
             App.Run();
+            
             //}
             //catch (Exception ex)
             //{
